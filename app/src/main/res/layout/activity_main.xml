@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/idSetValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Введите сумму" />
+
+    <Switch
+        android:id="@+id/isAdd"
+        android:layout_width="400dp"
+        android:layout_height="50dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Пополнение"
+        android:textAlignment="textStart"
+        android:translationX="5dp" />
+
+    <Spinner
+        android:id="@+id/categoryOfTransaction"
+        android:layout_width="400dp"
+        android:layout_height="50dp"
+        android:translationX="5dp" />
+
+    <Button
+        android:id="@+id/BtnAddTransaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Добавить операцию"
+        android:textAllCaps="false"
+        android:visibility="visible" />
+
+</LinearLayout>
