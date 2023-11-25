@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -32,9 +33,8 @@ public class FinanceDBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         String val = "0";
-        if (isAdd){
+        if (isAdd)
             val = "1";
-        }
 
         values.put(FinancesDBSchemes.TransactionsHistory.COLUMN_NAME_VALUE, value);
         values.put(FinancesDBSchemes.TransactionsHistory.COLUMN_NAME_TYPE, val);

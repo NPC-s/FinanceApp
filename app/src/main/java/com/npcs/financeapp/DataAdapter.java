@@ -3,6 +3,7 @@ package com.npcs.financeapp;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,12 +23,8 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
         ViewHolder(View itemView) {
             super(itemView);
             valueTrans = itemView.findViewById(R.id.textViewValue);
-            categoryTrans = itemView.findViewById(R.id.textViewCategory);
             isAdd = itemView.findViewById(R.id.textViewIsAdd);
-        }
-
-        public TextView getTextView() {
-            return valueTrans;
+            categoryTrans = itemView.findViewById(R.id.textViewCategory);
         }
     }
 
@@ -48,14 +45,15 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Transaction currentItem = dataItemList.get(position);
         String isAddText;
-        if (currentItem.isAdd == false)
+        if (!currentItem.isAdd) {
             isAddText = "Трата";
-        else
+            holder.categoryTrans.setText(currentItem.category);
+        }
+        else {
             isAddText = "Получение";
+        }
         holder.valueTrans.setText(currentItem.value);
         holder.isAdd.setText(isAddText);
-        if (currentItem.isAdd == false)
-            holder.categoryTrans.setText(currentItem.category);
     }
 
     @Override
