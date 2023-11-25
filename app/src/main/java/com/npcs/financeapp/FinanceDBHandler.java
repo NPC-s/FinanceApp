@@ -2,8 +2,11 @@ package com.npcs.financeapp;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
 
 public class FinanceDBHandler extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
@@ -39,6 +42,25 @@ public class FinanceDBHandler extends SQLiteOpenHelper {
 
         db.insert(FinancesDBSchemes.TransactionsHistory.TABLE_NAME, null, values);
         db.close();
+    }
+
+    public ArrayList<Transaction> getTransactions(){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        ArrayList<Transaction> transactionsList = new ArrayList<>();
+
+        Cursor cursorTransactions = db.rawQuery("SELECT * FROM " + FinancesDBSchemes.TransactionsHistory.TABLE_NAME, null);
+
+        if (cursorTransactions.moveToFirst()) {
+            do {
+                transactionsList.add(new Transaction(cursorTransactions.getString(1),
+                        cursorTransactions.getString(3),
+                        cursorTransactions.getString(2)));
+            } while (cursorTransactions.moveToNext());
+        }
+        cursorTransactions.close();
+        return transactionsList;
     }
 
     private static final String SQL_CREATE_ENTRIES =
