@@ -45,8 +45,8 @@ public class FinanceDBHandler extends SQLiteOpenHelper {
             "CREATE TABLE " + FinancesDBSchemes.TransactionsHistory.TABLE_NAME + " (" +
                     FinancesDBSchemes.TransactionsHistory._ID + " INTEGER PRIMARY KEY," +
                     FinancesDBSchemes.TransactionsHistory.COLUMN_NAME_VALUE + " TEXT," +
-                    FinancesDBSchemes.TransactionsHistory.COLUMN_NAME_TYPE + " TEXT" +
-                    FinancesDBSchemes.TransactionsHistory.COLUMN_NAME_CATEGORY + "TEXT)";
+                    FinancesDBSchemes.TransactionsHistory.COLUMN_NAME_TYPE + " TEXT," +
+                    FinancesDBSchemes.TransactionsHistory.COLUMN_NAME_CATEGORY + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + FinancesDBSchemes.TransactionsHistory.TABLE_NAME;
