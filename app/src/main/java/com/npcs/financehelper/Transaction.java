@@ -1,6 +1,4 @@
-package com.npcs.financeapp;
-
-import android.util.Log;
+package com.npcs.financehelper;
 
 public class Transaction {
     public String value;

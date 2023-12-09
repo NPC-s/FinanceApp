@@ -1,4 +1,4 @@
-package com.npcs.financeapp;
+package com.npcs.financehelper;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.npcs.financeapp", appContext.getPackageName());
+        assertEquals("com.npcs.myapplication", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package com.npcs.financeapp.ui.theme
+package com.npcs.financehelper.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

@@ -5,7 +5,7 @@
     android:id="@+id/addTransactions"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.npcs.financeapp.MainActivity">
+    tools:context="com.npcs.financehelper.MainActivity">
 
     <TextView
         android:id="@+id/textView"
@@ -25,9 +25,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.npcs.financehelper.PieChart
+        android:id="@+id/pie_chart"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/addTransaction"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
@@ -37,13 +48,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
+    <Button
+        android:id="@+id/filter"
+        android:layout_width="130dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:text="Фильтр"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/addTransaction"
+        app:layout_constraintHorizontal_bias="0.73"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="30dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="400dp"
         android:layout_marginBottom="70dp"
         tools:context=".MainActivity">
 
@@ -55,4 +77,5 @@
             android:scrollbars="vertical" />
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
