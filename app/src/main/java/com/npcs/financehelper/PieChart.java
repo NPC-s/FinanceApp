@@ -5,8 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
+
+import androidx.compose.material3.MaterialTheme;
+
+import com.google.android.material.color.DynamicColors;
 
 import java.util.ArrayList;
 
@@ -32,8 +37,9 @@ public class PieChart extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(30f);
         entries = new ArrayList<>();
-
         float curAngle = - 90;
 
         for (int i = 0; i < values.length; i++) {
@@ -46,12 +52,10 @@ public class PieChart extends View {
             entries.add(entry);
 
             paint.setColor(colors[i]);
-            canvas.drawArc(0, 0, getWidth(), getHeight(), startAngle, sweepAngle, true, paint);
+            canvas.drawArc(paint.getStrokeWidth(), paint.getStrokeWidth(), getWidth()-paint.getStrokeWidth(), getHeight() - paint.getStrokeWidth(), startAngle, sweepAngle, false, paint);
         }
 
-        paint.setColor(Color.BLACK);
-
-        canvas.drawCircle( (getHeight()/2), getHeight()/2, (float) (getHeight() * 0.9 * 0.5), paint);
+        paint.setStyle(Paint.Style.FILL);
 
         curAngle = - 90;
 
@@ -61,7 +65,7 @@ public class PieChart extends View {
             float x = (float) ((Math.cos(Math.toRadians(angle)) * getWidth() / 4) + getWidth() / 2 - labels[i].length() * 20 / 2);
             float y = (float) ((Math.sin(Math.toRadians(angle)) * (getHeight() / 4)) + getHeight() / 2);
 
-            paint.setColor(Color.WHITE);
+            paint.setColor(Color.GRAY);
             paint.setTextSize(35);
             paint.setTypeface(Typeface.SANS_SERIF);
             paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
