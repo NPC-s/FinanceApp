@@ -11,20 +11,32 @@
 
         <TextView
             android:id="@+id/textViewIsAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp" />
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:gravity="end" />
 
         <TextView
             android:id="@+id/textViewValue"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:layout_marginTop="25dp" />
+            android:layout_marginTop="25dp"
+            android:gravity="end" />
 
         <TextView
             android:id="@+id/textViewCategory"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:layout_marginTop="50dp" />
+            android:layout_marginTop="12.5dp"
+            android:layout_marginStart="40dp"/>
+
+        <ImageView
+            android:id="@+id/iconViewCategory"
+            android:layout_width="28dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="12.5dp"
+            android:contentDescription="Рандомная иконка"
+            android:src="@drawable/products" />
+
     </FrameLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -32,6 +44,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
+        app:layout_constraintGuide_begin="34dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
