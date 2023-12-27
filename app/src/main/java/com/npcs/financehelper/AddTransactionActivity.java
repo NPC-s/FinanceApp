@@ -1,4 +1,4 @@
-package com.npcs.financeapp;
+package com.npcs.financehelper;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,7 +40,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                 isAddRaw = findViewById(R.id.isAdd);
 
                 String value = valueRaw.getText().toString();
-                boolean isAdd = isAddRaw.getShowText();
+                boolean isAdd = isAddRaw.isChecked();
                 String categoryTrans = categoryTransRaw.getSelectedItem().toString();
 
                 DBHandler = new FinanceDBHandler(AddTransactionActivity.this);

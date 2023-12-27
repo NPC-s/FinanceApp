@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.npcs.financeapp.AddTransactionActivity">
+    tools:context="com.npcs.financehelper.AddTransactionActivity">
 
     <EditText
         android:id="@+id/idSetValue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:inputType="number"
         android:hint="Введите сумму" />
 
     <Switch

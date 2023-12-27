@@ -1,4 +1,4 @@
-package com.npcs.financeapp.ui.theme
+package com.npcs.financehelper.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

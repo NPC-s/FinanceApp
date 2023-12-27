@@ -1,4 +1,4 @@
-package com.npcs.financeapp;
+package com.npcs.financehelper;
 
 import android.provider.BaseColumns;
 

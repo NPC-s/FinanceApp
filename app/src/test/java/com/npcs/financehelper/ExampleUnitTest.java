@@ -1,4 +1,4 @@
-package com.npcs.financeapp;
+package com.npcs.financehelper;
 
 import org.junit.Test;
 
