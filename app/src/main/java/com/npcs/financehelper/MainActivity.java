@@ -18,12 +18,12 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private DataAdapter adapter;
+    private TransDataAdapter adapter;
     private ArrayList<Transaction> dataItems;
+    private String[] Categories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,17 +38,13 @@ public class MainActivity extends AppCompatActivity {
 
         PieChart pieChart = findViewById(R.id.pie_chart);
 
-        String[] Categories = DBHandler.getCategories().toArray(new String[0]);
+        Categories = DBHandler.getCategories(true).toArray(new String[0]);
         boolean[] checkedItems = new boolean[Categories.length];
-        float[] Values = new float[Categories.length];
         for (int i = 0; i < Categories.length; i++) {
-            Values[i] = DBHandler.getSum(Categories[i]);
             checkedItems[i] = true;
         }
 
-        pieChart.setValues(Values);
-        pieChart.setLabels(Categories);
-        pieChart.setMaxValue(DBHandler.getSum());
+        pieChart.setLabels(Categories, DBHandler);
 
         if (Arrays.asList(checkedItems).contains(false))
             dataItems = DBHandler.getTransactions();
@@ -57,10 +53,11 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < Categories.length; i++)
                 if (checkedItems[i])
                     cats.add(Categories[i]);
-            dataItems = DBHandler.getTransactions(cats.toArray(new String[0]));
+            dataItems = DBHandler.getTransactions(cats.toArray(new String[0]), true);
+
         }
 
-        adapter = new DataAdapter(dataItems);
+        adapter = new TransDataAdapter(dataItems);
 
         recyclerView.setAdapter(adapter);
 
@@ -99,15 +96,24 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ArrayList<String> cats = new ArrayList<>();
-                        for (int i = 0; i < Categories.length; i++)
+                        for (int i = 1; i < Categories.length; i++)
                             if (checkedItems[i])
                                 cats.add(Categories[i]);
-                        dataItems = DBHandler.getTransactions(cats.toArray(new String[0]));
-                        recyclerView.setAdapter(new DataAdapter(dataItems));
+                        dataItems = DBHandler.getTransactions(cats.toArray(new String[0]), (Categories[0] == "Пополнения" & checkedItems[0]));
+                        recyclerView.setAdapter(new TransDataAdapter(dataItems));
                     }
                 });
 
                 builder.show();
+            }
+        });
+
+        Button toGoals = findViewById(R.id.goToGoals);
+        toGoals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, GoalsActivity.class);
+                startActivity(intent);
             }
         });
     }

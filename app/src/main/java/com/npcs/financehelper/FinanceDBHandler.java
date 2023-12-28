@@ -1,10 +1,14 @@
 package com.npcs.financehelper;
 
-import static com.npcs.financehelper.FinancesDBSchemes.TransactionsHistory.COLUMN_NAME_VALUE;
-import static com.npcs.financehelper.FinancesDBSchemes.TransactionsHistory.COLUMN_NAME_TYPE;
-import static com.npcs.financehelper.FinancesDBSchemes.TransactionsHistory.COLUMN_NAME_CATEGORY;
-import static com.npcs.financehelper.FinancesDBSchemes.TransactionsHistory.TABLE_NAME;
-//import static com.npcs.financehelper.FinancesDBSchemes.TransactionsHistory.COLUMN_NAME_VALUE;
+import static com.npcs.financehelper.FinancesDBSchemes.TransactionsHistory.TRANS_COLUMN_NAME_VALUE;
+import static com.npcs.financehelper.FinancesDBSchemes.TransactionsHistory.TRANS_COLUMN_NAME_TYPE;
+import static com.npcs.financehelper.FinancesDBSchemes.TransactionsHistory.TRANS_COLUMN_NAME_CATEGORY;
+import static com.npcs.financehelper.FinancesDBSchemes.TransactionsHistory.TRANS_TABLE_NAME;
+import static com.npcs.financehelper.FinancesDBSchemes.Goals.GOALS_COLUMN_NAME_GOAL;
+import static com.npcs.financehelper.FinancesDBSchemes.Goals.GOALS_COLUMN_NAME_DATE;
+import static com.npcs.financehelper.FinancesDBSchemes.Goals.GOALS_COLUMN_NAME_CUR_COUNT;
+import static com.npcs.financehelper.FinancesDBSchemes.Goals.GOALS_COLUMN_NAME_MAX_COUNT;
+import static com.npcs.financehelper.FinancesDBSchemes.Goals.GOALS_TABLE_NAME;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,6 +17,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FinanceDBHandler extends SQLiteOpenHelper {
@@ -26,6 +31,7 @@ public class FinanceDBHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_ENTRIES_GOALS);
     }
 
     @Override
@@ -38,15 +44,11 @@ public class FinanceDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        String val = "0";
-        if (isAdd)
-            val = "1";
+        values.put(TRANS_COLUMN_NAME_VALUE, value);
+        values.put(TRANS_COLUMN_NAME_TYPE, isAdd);
+        values.put(TRANS_COLUMN_NAME_CATEGORY, category);
 
-        values.put(COLUMN_NAME_VALUE, value);
-        values.put(COLUMN_NAME_TYPE, val);
-        values.put(COLUMN_NAME_CATEGORY, category);
-
-        db.insert(TABLE_NAME, null, values);
+        db.insert(TRANS_TABLE_NAME, null, values);
         db.close();
     }
 
@@ -56,43 +58,55 @@ public class FinanceDBHandler extends SQLiteOpenHelper {
 
         ArrayList<Transaction> transactionsList = new ArrayList<>();
 
-        Cursor cursorTransactions = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor cursorTransactions = db.rawQuery("SELECT * FROM " + TRANS_TABLE_NAME, null);
 
         if (cursorTransactions.moveToFirst()) {
             do {
-                transactionsList.add(new Transaction(cursorTransactions.getString(1),
+                transactionsList.add(new Transaction(cursorTransactions.getInt(1),
                         cursorTransactions.getString(3),
-                        cursorTransactions.getString(2)));
+                        (cursorTransactions.getInt(2) == 1)));
             } while (cursorTransactions.moveToNext());
         }
         cursorTransactions.close();
         return transactionsList;
     }
 
-    public ArrayList<Transaction> getTransactions(String[] categories){
+    public ArrayList<Transaction> getTransactions(String[] categories, boolean is_with_adds){
 
         SQLiteDatabase db = this.getReadableDatabase();
 
         ArrayList<Transaction> transactionsList = new ArrayList<>();
 
-        Cursor cursorTransactions = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " +
-                COLUMN_NAME_CATEGORY + " IN ('" + String.join("', '", categories) + "') AND "+
-                COLUMN_NAME_TYPE + " = '0'", null);
+        String query = "SELECT * FROM " + TRANS_TABLE_NAME + " WHERE " +
+                TRANS_COLUMN_NAME_CATEGORY + " IN ('" + String.join("', '", categories) + "')" +
+                " AND "+ TRANS_COLUMN_NAME_TYPE + " = 0 ";
+
+        if (is_with_adds)
+            query += "OR " + TRANS_COLUMN_NAME_TYPE + " = 1";
+
+        Cursor cursorTransactions = db.rawQuery(query, null);
 
         if (cursorTransactions.moveToFirst()) {
             do {
-                transactionsList.add(new Transaction(cursorTransactions.getString(1),
+                transactionsList.add(new Transaction(cursorTransactions.getInt(1),
                         cursorTransactions.getString(3),
-                        cursorTransactions.getString(2)));
+                        (cursorTransactions.getInt(2) == 1)));
             } while (cursorTransactions.moveToNext());
         }
         cursorTransactions.close();
         return transactionsList;
     }
 
-    public List<String> getCategories(){
+    public List<String> getCategories(boolean isAdd){
         List<String> results = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursorIsAdd = db.rawQuery(SQL_GET_IS_ADD_IN_TRANS, null);
+
+        if (isAdd & cursorIsAdd.moveToFirst()) {
+            results.add("Пополнения");
+        }
+        cursorIsAdd.close();
 
         Cursor cursorCategories = db.rawQuery(SQL_GET_CATEGORIES, null);
 
@@ -114,7 +128,7 @@ public class FinanceDBHandler extends SQLiteOpenHelper {
 
 
         Cursor cursorCategories = db.rawQuery(SQL_GET_CATEGORIES +
-                " AND " + COLUMN_NAME_CATEGORY +" IN (" + String.join(", ", allowedCategories),
+                " AND " + TRANS_COLUMN_NAME_CATEGORY +" IN (" + String.join(", ", allowedCategories),
             null);
 
         if (cursorCategories.moveToFirst()) {
@@ -132,9 +146,9 @@ public class FinanceDBHandler extends SQLiteOpenHelper {
     public float getSum(String category){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursorSum = db.rawQuery("SELECT SUM(" + COLUMN_NAME_VALUE + ") FROM transactions " +
-                        "WHERE " + COLUMN_NAME_TYPE + " = '0' AND "
-                        + COLUMN_NAME_CATEGORY + " = '" + category + "'",
+        Cursor cursorSum = db.rawQuery("SELECT SUM(" + TRANS_COLUMN_NAME_VALUE + ") FROM transactions " +
+                        "WHERE " + TRANS_COLUMN_NAME_TYPE + " = '0' AND "
+                        + TRANS_COLUMN_NAME_CATEGORY + " = '" + category + "'",
                 null);
 
         float res = 0;
@@ -152,8 +166,8 @@ public class FinanceDBHandler extends SQLiteOpenHelper {
     public float getSum(){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursorSum = db.rawQuery("SELECT SUM(" + COLUMN_NAME_VALUE + ") FROM transactions " +
-                        "WHERE " + COLUMN_NAME_TYPE + " = '0'",
+        Cursor cursorSum = db.rawQuery("SELECT SUM(" + TRANS_COLUMN_NAME_VALUE + ") FROM transactions " +
+                        "WHERE " + TRANS_COLUMN_NAME_TYPE + " = '0'",
                 null);
 
         float res = 0;
@@ -168,17 +182,59 @@ public class FinanceDBHandler extends SQLiteOpenHelper {
         return res;
     }
 
-    private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + TABLE_NAME + " (" +
-                    FinancesDBSchemes.TransactionsHistory._ID + " INTEGER PRIMARY KEY," +
-                    COLUMN_NAME_VALUE + " TEXT," +
-                    COLUMN_NAME_TYPE + " TEXT," +
-                    COLUMN_NAME_CATEGORY + " TEXT)";
+    public ArrayList<Goal> getGoals(){
+        ArrayList<Goal> results = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
 
-    private static final String SQL_GET_CATEGORIES = "SELECT " + COLUMN_NAME_CATEGORY +
-            " FROM " + TABLE_NAME + " WHERE " + COLUMN_NAME_TYPE +
-            " = '0'";
+        Cursor cursorGoals = db.rawQuery("SELECT * FROM " + GOALS_TABLE_NAME,
+                null);
+
+        if (cursorGoals.moveToFirst()) {
+            do {
+                results.add(new Goal(cursorGoals.getString(1),
+                        cursorGoals.getInt(2),
+                        cursorGoals.getInt(3)));
+            } while (cursorGoals.moveToNext());
+        }
+        cursorGoals.close();
+
+        return results;
+    }
+
+    public void addGoal(Goal g){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(GOALS_COLUMN_NAME_GOAL, g.name);
+        values.put(GOALS_COLUMN_NAME_CUR_COUNT, g.value);
+        values.put(GOALS_COLUMN_NAME_MAX_COUNT, g.maxValue);
+
+        db.insert(GOALS_TABLE_NAME, null, values);
+        db.close();
+    }
+
+    private static final String SQL_CREATE_ENTRIES =
+            "CREATE TABLE " + TRANS_TABLE_NAME + " (" +
+                    FinancesDBSchemes.TransactionsHistory._ID + " INTEGER PRIMARY KEY," +
+                    TRANS_COLUMN_NAME_VALUE + " INTEGER," +
+                    TRANS_COLUMN_NAME_TYPE + " BOOLEAN," +
+                    TRANS_COLUMN_NAME_CATEGORY + " TEXT)";
+
+    private static final String SQL_CREATE_ENTRIES_GOALS =
+            "CREATE TABLE " + GOALS_TABLE_NAME + " (" +
+                    FinancesDBSchemes.Goals._ID + " INTEGER PRIMARY KEY," +
+                    GOALS_COLUMN_NAME_GOAL + " TEXT," +
+                    GOALS_COLUMN_NAME_CUR_COUNT + " INTEGER," +
+                    GOALS_COLUMN_NAME_MAX_COUNT + " INTEGER" + ")";
+
+    private static final String SQL_GET_CATEGORIES = "SELECT " + TRANS_COLUMN_NAME_CATEGORY +
+            " FROM " + TRANS_TABLE_NAME + " WHERE " + TRANS_COLUMN_NAME_TYPE +
+            " = 0";
+
+    private static final String SQL_GET_IS_ADD_IN_TRANS = "SELECT " + TRANS_COLUMN_NAME_CATEGORY +
+            " FROM " + TRANS_TABLE_NAME + " WHERE " + TRANS_COLUMN_NAME_TYPE +
+            " = 1";
 
     private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + TABLE_NAME;
+            "DROP TABLE IF EXISTS " + TRANS_TABLE_NAME;
 }

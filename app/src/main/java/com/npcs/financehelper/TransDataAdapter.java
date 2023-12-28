@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
+public class TransDataAdapter extends RecyclerView.Adapter<TransDataAdapter.ViewHolder> {
 
     private ArrayList<Transaction> dataItemList;
 
@@ -19,7 +19,6 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
         private final TextView valueTrans;
         private final TextView categoryTrans;
         private final TextView isAdd;
-
         private final ImageView iconViewCategory;
 
         ViewHolder(View itemView) {
@@ -31,10 +30,9 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
         }
     }
 
-    public DataAdapter(ArrayList<Transaction> dataItemList) {
+    public TransDataAdapter(ArrayList<Transaction> dataItemList) {
         this.dataItemList = dataItemList;
     }
-
 
     @NonNull
     @Override
@@ -70,7 +68,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
         else {
             isAddText = "Получение";
         }
-        holder.valueTrans.setText(currentItem.value);
+        holder.valueTrans.setText(String.valueOf(currentItem.value));
         holder.isAdd.setText(isAddText);
     }
 

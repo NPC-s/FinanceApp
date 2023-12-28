@@ -14,6 +14,8 @@ import androidx.compose.material3.MaterialTheme;
 import com.google.android.material.color.DynamicColors;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class PieChart extends View {
 
@@ -77,8 +79,18 @@ public class PieChart extends View {
         values = floats;
     }
 
-    public void setLabels(String[] strings) {
-        labels = strings;
+    public void setLabels(String[] strings, FinanceDBHandler db) {
+        List<String> cats = new ArrayList<String>(Arrays.asList(strings));
+        if (cats.contains("Пополнения"))
+            cats.remove("Пополнения");
+
+        labels = cats.toArray(new String[0]);
+        values = new float[labels.length];
+
+        for (int i = 0; i < labels.length; i++)
+            values[i] = db.getSum(labels[i]);
+
+        maxValue = db.getSum();
     }
 
     public void setMaxValue(float value){

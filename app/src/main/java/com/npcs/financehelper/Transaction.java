@@ -1,13 +1,15 @@
 package com.npcs.financehelper;
 
 public class Transaction {
-    public String value;
+    public int value;
     public String category;
     public boolean isAdd = false;
 
-    public Transaction(String value, String category, String isAddstr){
+    public Transaction(int value, String category, boolean isAdd){
         this.value = value;
         this.category = category;
-        this.isAdd = isAddstr.equals("1");
+        if (isAdd)
+            this.category = "Пополнение";
+        this.isAdd = isAdd;
     }
 }

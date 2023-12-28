@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.npcs.financehelper">
 
-    <application android:name=".FinanceHelper"
+    <application
+        android:name=".FinanceHelper"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -14,7 +15,17 @@
         android:theme="@style/Theme.FinanceApp"
         tools:targetApi="31">
         <activity
-            android:name="com.npcs.financehelper.MainActivity"
+            android:name=".AddGoalActivity"
+            android:exported="false"
+            android:label="@string/title_activity_add_goal"
+            android:theme="@style/Theme.FinanceApp" />
+        <activity
+            android:name=".GoalsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_goals"
+            android:theme="@style/Theme.FinanceApp" />
+        <activity
+            android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Base.Theme.FinanceApp">
             <intent-filter>
@@ -24,9 +35,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:theme="@style/Base.Theme.FinanceApp"
-            android:name="com.npcs.financehelper.AddTransactionActivity">
-        </activity>
+            android:name=".AddTransactionActivity"
+            android:theme="@style/Base.Theme.FinanceApp" />
     </application>
 
 </manifest>
